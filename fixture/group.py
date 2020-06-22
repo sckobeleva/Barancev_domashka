@@ -26,3 +26,11 @@ class GroupHelper:
     def return_to_group_page(self):  # возвращаемся на страницу "groups"
         driver = self.app.driver
         driver.find_element(By.LINK_TEXT, "group page").click()
+
+    def delete_first_group(self):
+        driver = self.app.driver
+        self.open_groups_page()
+        driver.find_element_by_name("selected[]").click()
+        driver.find_element_by_name("delete").click()
+        self.return_to_group_page()
+
