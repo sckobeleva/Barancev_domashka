@@ -27,7 +27,7 @@ class GroupHelper:
         driver = self.app.driver
         driver.find_element(By.LINK_TEXT, "group page").click()
 
-    def delete_first_group(self):
+    def delete_first_group(self):   # удаляем первую по счету пустую группу
         driver = self.app.driver
         self.open_groups_page()
         driver.find_element_by_name("selected[]").click()
