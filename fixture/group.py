@@ -14,14 +14,22 @@ class GroupHelper:
         driver = self.app.driver
         self.open_groups_page()
         driver.find_element(By.CSS_SELECTOR, "[name = ""new""]").click()
-        driver.find_element(By.NAME, "group_name").click()
-        driver.find_element(By.NAME, "group_name").send_keys(group.name)
-        driver.find_element(By.NAME, "group_header").click()
-        driver.find_element(By.NAME, "group_header").send_keys(group.header)
-        driver.find_element(By.NAME, "group_footer").click()
-        driver.find_element(By.NAME, "group_footer").send_keys(group.footer)
+        self.fill_group_form(group)
         driver.find_element(By.NAME, "submit").click()
         self.return_to_group_page()
+
+    def fill_group_form(self, group): # заполняем поля группы
+        driver = self.app.driver
+        self.change_field_value("group_name", group.name)
+        self.change_field_value("group_header", group.header)
+        self.change_field_value("group_footer", group.footer)
+
+    def change_field_value(self, field_name, text):
+        driver = self.app.driver
+        if text is not None:
+            driver.find_element(By.NAME, field_name).click()
+            driver.find_element(By.NAME, field_name).clear()
+            driver.find_element(By.NAME, field_name).send_keys(text)
 
     def return_to_group_page(self):  # возвращаемся на страницу "groups"
         driver = self.app.driver
@@ -30,7 +38,20 @@ class GroupHelper:
     def delete_first_group(self):   # удаляем первую по счету пустую группу
         driver = self.app.driver
         self.open_groups_page()
-        driver.find_element_by_name("selected[]").click()
+        self.select_first_group()
         driver.find_element_by_name("delete").click()
+        self.return_to_group_page()
+
+    def select_first_group(self):   # находим и выбираем первую в списке группу
+        driver = self.app.driver
+        driver.find_element_by_name("selected[]").click()
+
+    def modify_first_group(self, new_group_data): # редактируем форму и сохраняем изменения
+        driver = self.app.driver
+        self.open_groups_page()
+        self.select_first_group()
+        driver.find_element(By.NAME, "edit").click()
+        self.fill_group_form(new_group_data)
+        driver.find_element(By.NAME, "update").click()
         self.return_to_group_page()
 
