@@ -8,7 +8,8 @@ class GroupHelper:
 
     def open_groups_page(self):  # переходим на страницу "groups"
         driver = self.app.driver
-        driver.find_element(By.LINK_TEXT, "groups").click()
+        if not (driver.current_url.endswith("/group.php") and len(driver.find_elements(By.CSS_SELECTOR, "[name = ""new""]"))>0 ):
+            driver.find_element(By.LINK_TEXT, "groups").click()
 
     def create(self, group):  # создаем новую группу, заполняем поля, сохраняем
         driver = self.app.driver
