@@ -14,6 +14,7 @@ class GroupHelper:
         self.fill_group_form(group)
         driver.find_element(By.NAME, "submit").click()
         self.return_to_group_page()
+        self.group_cache = None
 
     def count(self):    # считаем количество групп в списке
         driver = self.app.driver
@@ -33,21 +34,25 @@ class GroupHelper:
         self.select_first_group()
         driver.find_element_by_name("delete").click()
         self.return_to_group_page()
+        self.group_cache = None
 
     def fill_group_form(self, group):   # заполняем поля группы
         self.change_field_value("group_name", group.name)
         self.change_field_value("group_header", group.header)
         self.change_field_value("group_footer", group.footer)
 
+    group_cache = None
+
     def get_group_list(self):   # получаем список групп
-        driver = self.app.driver
-        self.open_groups_page()
-        groups = []
-        for element in driver.find_elements_by_css_selector("span.group"):
-            text = element.text
-            id = element.find_element_by_name("selected[]").get_attribute("value")
-            groups.append(Group(name=text,id=id))
-        return groups
+        if self.group_cache is None:
+            driver = self.app.driver
+            self.open_groups_page()
+            self.group_cache = []
+            for element in driver.find_elements_by_css_selector("span.group"):
+                text = element.text
+                id = element.find_element_by_name("selected[]").get_attribute("value")
+                self.group_cache.append(Group(name=text,id=id))
+        return list(self.group_cache)
 
     def modify_first_group(self, new_group_data):   # редактируем форму и сохраняем изменения
         driver = self.app.driver
@@ -57,6 +62,7 @@ class GroupHelper:
         self.fill_group_form(new_group_data)
         driver.find_element(By.NAME, "update").click()
         self.return_to_group_page()
+        self.group_cache = None
 
     def open_groups_page(self):  # переходим на страницу "groups"
         driver = self.app.driver
