@@ -13,20 +13,19 @@ class Application:
         self.group = GroupHelper(self)
         self.contact = ContactHelper(self)
 
-    def open_home_page(self):  # открываем главную страницу
-        driver = self.driver
-        driver.get("http://localhost/addressbook/")
-
-    def destroy(self):
+    def destroy(self):  # закрываем браузер
         self.driver.quit()
 
-    def is_valid(self):
+    def is_valid(self): # проверяем валидность адреса
         try:
             self.driver.current_url
             return True
         except:
             return False
 
+    def open_home_page(self):  # открываем главную страницу
+        driver = self.driver
+        driver.get("http://localhost/addressbook/")
 
 
 

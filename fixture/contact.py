@@ -6,10 +6,6 @@ class ContactHelper:
     def __init__(self, app):
         self.app = app
 
-    def open_contacts_page(self):  # переходим на страницу "add new"
-        driver = self.app.driver
-        driver.find_element(By.LINK_TEXT, "add new").click()
-
     def create(self, contact):  # заполняем поля в карточке, сохраняем
         driver = self.app.driver
         self.open_contacts_page()
@@ -22,3 +18,7 @@ class ContactHelper:
         driver.find_element(By.NAME, "nickname").click()
         driver.find_element(By.NAME, "nickname").send_keys(contact.nickname)
         driver.find_element(By.NAME, "submit").click()
+
+    def open_contacts_page(self):  # переходим на страницу "add new"
+        driver = self.app.driver
+        driver.find_element(By.LINK_TEXT, "add new").click()
