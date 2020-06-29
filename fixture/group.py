@@ -28,13 +28,16 @@ class GroupHelper:
             driver.find_element(By.NAME, field_name).clear()
             driver.find_element(By.NAME, field_name).send_keys(text)
 
-    def delete_first_group(self):   # удаляем первую по счету пустую группу
+    def delete_group_by_index(self, index):   # удаляем рандомную группу
         driver = self.app.driver
         self.open_groups_page()
-        self.select_first_group()
+        self.select_group_by_index(index)
         driver.find_element_by_name("delete").click()
         self.return_to_group_page()
         self.group_cache = None
+
+    def delete_first_group(self):   # удаляем первую по счету группу
+        self.delete_group_by_index(0)
 
     def fill_group_form(self, group):   # заполняем поля группы
         self.change_field_value("group_name", group.name)
@@ -54,10 +57,13 @@ class GroupHelper:
                 self.group_cache.append(Group(name=text,id=id))
         return list(self.group_cache)
 
-    def modify_first_group(self, new_group_data):   # редактируем форму и сохраняем изменения
+    def modify_first_group(self, new_group_data):   # редактируем первую по счету группу
+        self.modify_group_by_index(0)
+
+    def modify_group_by_index(self, index, new_group_data):  # редактируем рандомную группу
         driver = self.app.driver
         self.open_groups_page()
-        self.select_first_group()
+        self.select_group_by_index(index)
         driver.find_element(By.NAME, "edit").click()
         self.fill_group_form(new_group_data)
         driver.find_element(By.NAME, "update").click()
@@ -76,3 +82,7 @@ class GroupHelper:
     def select_first_group(self):   # находим и выбираем первую в списке группу
         driver = self.app.driver
         driver.find_element_by_name("selected[]").click()
+
+    def select_group_by_index(self, index):   # находим и выбираем первую в списке группу
+        driver = self.app.driver
+        driver.find_elements_by_name("selected[]")[index].click()
