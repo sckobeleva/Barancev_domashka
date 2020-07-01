@@ -83,6 +83,6 @@ class GroupHelper:
         driver = self.app.driver
         driver.find_element_by_name("selected[]").click()
 
-    def select_group_by_index(self, index):   # находим и выбираем первую в списке группу
+    def select_group_by_index(self, index):   # находим и выбираем группу по индексу
         driver = self.app.driver
         driver.find_elements_by_name("selected[]")[index].click()
