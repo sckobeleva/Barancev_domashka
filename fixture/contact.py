@@ -20,21 +20,35 @@ class ContactHelper:
     def create(self, contact):  # заполняем поля в карточке, сохраняем
         driver = self.app.driver
         self.add_new_contact()
-        driver.find_element(By.NAME, "firstname").click()
-        driver.find_element(By.NAME, "firstname").send_keys(contact.firstname)
-        driver.find_element(By.NAME, "lastname").click()
-        driver.find_element(By.NAME, "lastname").send_keys(contact.lastname)
-        driver.find_element(By.NAME, "home").click()
-        driver.find_element(By.NAME, "home").send_keys(contact.homephone)
-        driver.find_element(By.NAME, "mobile").click()
-        driver.find_element(By.NAME, "mobile").send_keys(contact.mobilephone)
-        driver.find_element(By.NAME, "work").click()
-        driver.find_element(By.NAME, "work").send_keys(contact.workphone)
-        driver.find_element(By.NAME, "fax").click()
-        driver.find_element(By.NAME, "fax").send_keys(contact.faxphone)
+        self.fill_contact_form(contact)
         driver.find_element(By.NAME, "submit").click()
         self.app.open_home_page()
         self.contact_cache = None
+
+    def change_field_value(self, field_name, text):  # изменяем поля контакта, только если они не пустые
+        driver = self.app.driver
+        if text is not None:
+            driver.find_element(By.NAME, field_name).click()
+            driver.find_element(By.NAME, field_name).clear()
+            driver.find_element(By.NAME, field_name).send_keys(text)
+
+    def delete_contact_by_index(self, index):   # аходим контакт по индексу и удаляем
+        driver = self.app.driver
+        self.app.open_home_page()
+        driver.find_elements(By.NAME,"selected[]")[index].click()
+        driver.find_element(By.CSS_SELECTOR, "[value=""Delete""]").click()
+        alert = driver.switch_to.alert
+        alert.accept()
+        self.app.open_home_page()
+        self.contact_cache = None
+
+    def fill_contact_form(self, contact):   # заполняем поля контакта
+        self.change_field_value("firstname", contact.firstname)
+        self.change_field_value("lastname", contact.lastname)
+        self.change_field_value("home", contact.homephone)
+        self.change_field_value("mobile", contact.mobilephone)
+        self.change_field_value("work", contact.workphone)
+        self.change_field_value("fax", contact.faxphone)
 
     contact_cache = None
 
@@ -50,11 +64,28 @@ class ContactHelper:
                 self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=str(id)))
         return list(self.contact_cache)
 
-    #def open_contact_to_edit_by_index(self, index): # находим и открываем контакт на редактирование по индексу
+    def modify_contact_by_index(self, index, new_contact_data):
+        driver = self.app.driver
+        self.app.open_home_page()
+        self.open_contact_to_edit_by_index(index)
+        self.fill_contact_form(new_contact_data)
+        driver.find_element(By.CSS_SELECTOR, "[value=""Update""]").click()
+        self.app.open_home_page()
+        self.contact_cache = None
 
+    def open_contact_to_edit_by_index(self, index): # находим контакт по индексу и открываем редактирование
+        driver = self.app.driver
+        self.app.open_home_page()
+        row = driver.find_elements_by_name("entry")[index]
+        cell = row.find_elements_by_tag_name("td")[7]
+        cell.find_element_by_tag_name("a").click()
 
-    #def open_contact_to_view_by_index(self, index): # находим и открываем контакт на просмотр по индексу
-
+    def open_contact_to_view_by_index(self, index): # находим контакт по индексу и открываем на просмотр
+        driver = self.app.driver
+        self.app.open_home_page()
+        row = driver.find_elements_by_name("entry")[index]
+        cell = row.find_elements_by_tag_name("td")[6]
+        cell.find_element_by_tag_name("a").click()
 
 
 
