@@ -26,7 +26,11 @@ class SessionHelper:
 
     def is_logged_in_as(self, username): # проверяем, что мы залогинены под конкр. пользователем
         driver = self.app.driver
-        return driver.find_element(By.XPATH, "//div/div[1]/form/b").text == "(" + username + ")"
+        return self.is_logged_user() == username
+
+    def is_logged_user(self):
+        driver = self.app.driver
+        return driver.find_element(By.XPATH, "//div/div[1]/form/b").text[1:-1]
 
     def login(self, username, password):  # логинимся
         driver = self.app.driver
