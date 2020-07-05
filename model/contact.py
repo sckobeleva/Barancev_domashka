@@ -3,13 +3,12 @@ from sys import maxsize
 
 class Contact:
 
-    def __init__(self, firstname=None, lastname=None, homephone=None, mobilephone=None, workphone=None, faxphone=None, id=None):
+    def __init__(self, firstname=None, lastname=None, homephone=None, mobilephone=None, workphone=None, id=None):
         self.firstname = firstname
         self.lastname = lastname
         self.homephone = homephone
         self.mobilephone = mobilephone
         self.workphone = workphone
-        self.faxphone = faxphone
         self.id = id
 
     def __repr__(self):  # получаем строковое представление объекта
